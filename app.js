@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 console.log('🚀 Iniciando servidor...');
 console.log('📍 Puerto configurado:', PORT);
 console.log('🌍 Entorno:', process.env.NODE_ENV || 'development');
+console.log('🔄 Deploy timestamp:', new Date().toISOString());
 
 // Middleware para CORS
 app.use(cors());
