@@ -14,8 +14,13 @@ console.log('📍 Puerto configurado:', PORT);
 console.log('🌍 Entorno:', process.env.NODE_ENV || 'development');
 console.log('🔄 Deploy timestamp:', new Date().toISOString());
 
-// Middleware para CORS
-app.use(cors());
+// Middleware para CORS - Configuración más permisiva
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: false
+}));
 
 // Middleware para analizar JSON
 app.use(express.json());
