@@ -30,11 +30,12 @@ app.use((req, res, next) => {
 
 // Ruta raíz para verificar que el servidor está funcionando
 app.get('/', (req, res) => {
+  console.log('🎯 RUTA RAÍZ ACCEDIDA!');
   res.json({ 
     message: 'Backend de Rubro está funcionando correctamente ✅', 
     status: 'OK',
     timestamp: new Date().toISOString(),
-    version: '1.0.1'
+    version: '1.0.2 - Deploy Test'
   });
 });
 
