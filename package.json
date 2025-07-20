@@ -8,9 +8,10 @@
     "dev": "node app.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
     "express": "^4.18.2",
-    "mysql2": "^3.14.2",
-    "cors": "^2.8.5"
+    "mysql2": "^3.14.2"
   },
   "engines": {
     "node": ">=18.0.0"
