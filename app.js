@@ -85,9 +85,9 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar el servidor
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
-  console.log(`🌐 Server accessible at: http://0.0.0.0:${PORT}`);
+  console.log(`� Environment: ${process.env.NODE_ENV || 'development'}`);
   if (process.env.RENDER_EXTERNAL_URL) {
     console.log(`🔗 External URL: ${process.env.RENDER_EXTERNAL_URL}`);
   }
