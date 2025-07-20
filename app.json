@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "App Móvil",
+    "slug": "app-movil",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "086c36c6-8dff-4c72-b2a5-45c707dc3b6a"
+      }
+    },
+    "owner": "fefo1456"
+  }
+}
