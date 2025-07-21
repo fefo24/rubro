@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const db = require('./db');
 const loginController = require('./controllers/loginController');
 const publicacionesController = require('./controllers/publicacionesController');
@@ -8,18 +10,54 @@ const chatController = require('./controllers/chatController');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Log para debug en Render
+// Seguridad: Helmet para headers de seguridad
+app.use(helmet());
+
+// Limitador de velocidad para prevenir ataques de fuerza bruta
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // límite de 100 requests por ventana de tiempo por IP
+  message: 'Demasiadas solicitudes desde esta IP, intenta de nuevo más tarde.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
+
+// Limitador específico para login (más restrictivo)
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 5, // límite de 5 intentos de login por IP
+  skipSuccessfulRequests: true,
+});
+
+// Log para debug en producción
 console.log('🚀 Iniciando servidor...');
 console.log('📍 Puerto configurado:', PORT);
 console.log('🌍 Entorno:', process.env.NODE_ENV || 'development');
 console.log('🔄 Deploy timestamp:', new Date().toISOString());
 
-// Middleware para CORS - Configuración más permisiva
+// Middleware para CORS - Configuración segura
+const allowedOrigins = [
+  'https://web-production-9311.up.railway.app',
+  'http://localhost:3000',
+  'exp://localhost:19000',
+  'exp://192.168.1.31:19000'
+];
+
 app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: false
+  origin: function (origin, callback) {
+    // Permitir requests sin origin (aplicaciones móviles)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 // Ruta de prueba para verificar que el servidor está funcionando
@@ -67,10 +105,10 @@ app.get('/check-db', (req, res) => {
 });
 
 // Ruta para ingresar al menú
-app.post('/ingresar', loginController.ingresar);
+app.post('/ingresar', loginLimiter, loginController.ingresar);
 
 // Rutas para usuarios
-app.post('/crear', loginController.crear);
+app.post('/crear', loginLimiter, loginController.crear);
 
 // Ruta para obtener rubros
 app.get('/rubros', loginController.obtenerRubros);
