@@ -107,6 +107,9 @@ app.get('/check-db', (req, res) => {
 // Ruta para ingresar al menú
 app.post('/ingresar', loginLimiter, loginController.ingresar);
 
+// Ruta temporal de compatibilidad para /login (redirecciona a /ingresar)
+app.post('/login', loginLimiter, loginController.ingresar);
+
 // Rutas para usuarios
 app.post('/crear', loginLimiter, loginController.crear);
 
