@@ -119,8 +119,6 @@ const loginController = {
                 });
               }
             }
-            // Verificar contraseña
-            const isValidPassword = await bcrypt.compare(clave, user.clave);
             
             if (!isValidPassword) {
               securityUtils.safeLog('Login fallido - contraseña incorrecta', { usuario });
