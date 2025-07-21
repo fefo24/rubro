@@ -70,9 +70,10 @@ const loginController = {
     }
   ],
 
-  // Login seguro
+  // Login compatible (temporal) - Maneja usuarios antiguos y nuevos
   ingresar: [
-    securityUtils.validateEmail(),
+    // Validaciones más flexibles para compatibilidad
+    body('usuario').notEmpty().withMessage('El usuario es requerido'),
     body('clave').notEmpty().withMessage('La contraseña es requerida'),
     securityUtils.checkValidationErrors,
     async (req, res) => {
@@ -98,6 +99,26 @@ const loginController = {
           const user = result[0];
           
           try {
+            let isValidPassword = false;
+            
+            // Verificar si la contraseña está encriptada (nueva) o en texto plano (antigua)
+            if (user.clave.startsWith('$2a$') || user.clave.startsWith('$2b$')) {
+              // Contraseña nueva (encriptada con bcrypt)
+              isValidPassword = await bcrypt.compare(clave, user.clave);
+            } else {
+              // Contraseña antigua (texto plano) - solo para compatibilidad temporal
+              isValidPassword = (clave === user.clave);
+              
+              // Opcionalmente, actualizar a versión encriptada
+              if (isValidPassword) {
+                const hashedPassword = await bcrypt.hash(clave, 12);
+                const updateQuery = 'UPDATE usuario SET clave = ? WHERE id = ?';
+                db.query(updateQuery, [hashedPassword, user.id], (err) => {
+                  if (err) console.error('Error actualizando contraseña:', err);
+                  else console.log('Contraseña actualizada a formato seguro para usuario:', usuario);
+                });
+              }
+            }
             // Verificar contraseña
             const isValidPassword = await bcrypt.compare(clave, user.clave);
             
