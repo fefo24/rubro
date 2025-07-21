@@ -3,16 +3,20 @@ require('dotenv').config();
 
 // Crear un pool de conexiones con reconexión automática
 const db = mysql.createPool({
-  host: process.env.DB_HOST || '190.113.12.113',
-  user: process.env.DB_USER || 'davrubro',
-  password: process.env.DB_PASSWORD || 'POkuy3447jl',
-  database: process.env.DB_NAME || 'rubro',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT || 3306,
   connectionLimit: 10,
   acquireTimeout: 60000,
   timeout: 60000,
   reconnect: true,
   idleTimeout: 300000,
-  queueLimit: 0
+  queueLimit: 0,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Función para manejar la conexión con reintentos
@@ -24,7 +28,7 @@ const connectWithRetry = () => {
       setTimeout(connectWithRetry, 5000);
       return;
     }
-    console.log('✅ Connected to MySQL database: rubro');
+    console.log('✅ Connected to MySQL database:', process.env.DB_NAME);
     if (connection) connection.release();
   });
 };

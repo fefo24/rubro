@@ -35,25 +35,31 @@ const loginController = {
 
   // ingresar al menu
   ingresar: (req, res) => {
+    console.log('📝 Login intento recibido:', req.body);
     const { usuario, clave } = req.body;
     
     if (!usuario || !clave) {
+      console.log('❌ Falta usuario o clave');
       return res.status(400).json({ error: 'Usuario y clave son requeridos' });
     }
     
+    console.log('🔍 Buscando usuario:', usuario);
     const selectQuery = 'SELECT * FROM usuario WHERE usuario = ? AND clave = ?';
     db.query(selectQuery, [usuario, clave], (err, result) => {
       if (err) {
-        console.error('Error al buscar usuario:', err);
-        return res.status(500).json({ error: 'Error interno del servidor' });
+        console.error('❌ Error al buscar usuario:', err);
+        return res.status(500).json({ error: 'Error interno del servidor', details: err.message });
       }
-            
+      
+      console.log('📊 Resultados encontrados:', result.length);
+      
       if (result.length > 0) {
+        console.log('✅ Usuario autenticado exitosamente');
         // Registrar la sesión activa cuando el usuario hace login
         const insertSessionQuery = 'INSERT INTO sesiones_activas (usuario, ultima_actividad) VALUES (?, NOW()) ON DUPLICATE KEY UPDATE ultima_actividad = NOW()';
         db.query(insertSessionQuery, [usuario], (sessionErr) => {
           if (sessionErr) {
-            console.error('Error al registrar sesión:', sessionErr);
+            console.error('⚠️ Error al registrar sesión:', sessionErr);
           }
         });
         

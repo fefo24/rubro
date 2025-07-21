@@ -22,6 +22,17 @@ app.use(cors({
   credentials: false
 }));
 
+// Ruta de prueba para verificar que el servidor está funcionando
+app.get('/', (req, res) => {
+  console.log('🔍 Solicitud de prueba recibida');
+  res.status(200).json({ 
+    status: 'OK',
+    message: 'Servidor funcionando correctamente',
+    timestamp: new Date().toISOString(),
+    version: '1.0'
+  });
+});
+
 // Middleware para analizar JSON
 app.use(express.json());
 
