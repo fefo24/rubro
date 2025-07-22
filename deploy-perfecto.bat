@@ -19,17 +19,14 @@ if defined HAS_CHANGES (
     echo [2/4] No hay cambios locales para subir
 )
 
-REM Deploy optimizado en servidor
-echo [3/4] Actualizando servidor...
-ssh modiin@190.113.12.113 "cd /opt/rubro-api && git reset --hard origin/main && pm2 restart rubro-api"
-
-REM Verificar estado final
-echo [4/4] Verificando aplicacion...
-ssh modiin@190.113.12.113 "pm2 list | grep rubro-api"
+REM Deploy optimizado en servidor con verificacion en una sola conexion
+echo [3/4] Actualizando servidor y verificando...
+ssh modiin@190.113.12.113 "cd /opt/rubro-api && git reset --hard origin/main && pm2 restart rubro-api && echo '✅ Estado de la aplicacion:' && pm2 list | grep rubro-api"
 
 echo.
 echo ✅ DEPLOY PERFECTO COMPLETADO!
 echo ✅ Sin errores
-echo ✅ Tiempo: 1-2 minutos
+echo ✅ Tiempo: 1-2 minutos  
+echo ✅ Una sola contraseña
 echo ✅ Aplicacion funcionando
 pause
