@@ -133,6 +133,16 @@ const loginController = {
               }
             });
             
+            // Actualizar fechas de todas las publicaciones del usuario para mantenerlas vigentes
+            const updatePublicacionesQuery = 'UPDATE publicaciones SET fecha = NOW() WHERE usuario = ?';
+            db.query(updatePublicacionesQuery, [usuario], (updateErr, updateResult) => {
+              if (updateErr) {
+                console.error('Error al actualizar fechas de publicaciones:', updateErr);
+              } else if (updateResult.affectedRows > 0) {
+                console.log(`✅ Actualizadas ${updateResult.affectedRows} publicaciones para usuario: ${usuario}`);
+              }
+            });
+            
             // Generar token JWT
             const token = authMiddleware.generateToken({
               id: user.id,
