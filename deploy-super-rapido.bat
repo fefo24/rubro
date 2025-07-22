@@ -16,7 +16,7 @@ ssh modiin@190.113.12.113 "cd /opt/rubro-api && git reset --hard origin/main && 
 
 REM Verificar estado
 echo [3/3] Verificando estado...
-ssh modiin@190.113.12.113 "pm2 status rubro-api --no-colors"
+ssh modiin@190.113.12.113 "pm2 status rubro-api"
 
 echo.
 echo ✅ DEPLOY RAPIDO COMPLETADO!
