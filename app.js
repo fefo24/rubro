@@ -6,6 +6,7 @@ const db = require('./db');
 const loginController = require('./controllers/loginController');
 const publicacionesController = require('./controllers/publicacionesController');
 const chatController = require('./controllers/chatController');
+const secureLogger = require('./utils/secureLogger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -74,11 +75,13 @@ app.get('/', (req, res) => {
 // Middleware para analizar JSON
 app.use(express.json());
 
-// Middleware simple para verificar requests
+// Middleware simple para verificar requests (con filtro de seguridad)
 app.use((req, res, next) => {
   console.log('*** REQUEST DETECTADA ***');
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  console.log('Body:', req.body);
+  
+  // Usar logger seguro para el body
+  secureLogger.safeLog('Body:', req.body);
   next();
 });
 
