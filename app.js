@@ -75,13 +75,9 @@ app.get('/', (req, res) => {
 // Middleware para analizar JSON
 app.use(express.json());
 
-// Middleware simple para verificar requests (con filtro de seguridad)
+// Middleware seguro para verificar requests (sin exponer contraseñas)
 app.use((req, res, next) => {
-  console.log('*** REQUEST DETECTADA ***');
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  
-  // Usar logger seguro para el body
-  secureLogger.safeLog('Body:', req.body);
+  secureLogger.logRequest(req.method, req.url, req.body);
   next();
 });
 
