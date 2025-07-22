@@ -12,11 +12,11 @@ git push origin main
 
 REM Deploy optimizado en servidor
 echo [2/3] Deploy optimizado en servidor...
-ssh -i nueva-clave-segura modiin@190.113.12.113 "cd /home/modiin/rubro && git reset --hard origin/main && pm2 restart rubro-api --update-env"
+ssh modiin@190.113.12.113 "cd ~/rubro && git reset --hard origin/main && pm2 restart rubro-api --update-env"
 
 REM Verificar estado
 echo [3/3] Verificando estado...
-ssh -i nueva-clave-segura modiin@190.113.12.113 "pm2 status rubro-api"
+ssh modiin@190.113.12.113 "pm2 status rubro-api"
 
 echo.
 echo ✅ DEPLOY RAPIDO COMPLETADO!

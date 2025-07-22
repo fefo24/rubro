@@ -3,8 +3,7 @@ echo ===@echo off
 echo 🚀 Iniciando deploy ultra rapido...
 echo.
 
-REM Usando la nueva clave SSH segura y usuario correcto
-ssh -i nueva-clave-segura modiin@190.113.12.113 "cd /home/modiin/rubro && git pull && pm2 restart rubro-api"
+ssh modiin@190.113.12.113 "cd ~/rubro && git pull && pm2 restart rubro-api"
 
 echo.
 echo ✅ Deploy completado!

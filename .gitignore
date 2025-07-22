@@ -10,12 +10,6 @@ app-movil/
 # SSH Keys - NUNCA subir claves privadas
 *.pem
 *.key
-id_rsa
-id_rsa.pub
-*_rsa
-*_rsa.pub
+id_rsa*
+*_rsa*
 *.ppk
-a
-a.pub
-nueva-clave-segura
-nueva-clave-segura.pub
