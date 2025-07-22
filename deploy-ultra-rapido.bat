@@ -1,5 +1,14 @@
 @echo off
-echo ========================================
+echo ===@echo off
+echo 🚀 Iniciando deploy ultra rapido...
+echo.
+
+REM Usando la nueva clave SSH segura y usuario correcto
+ssh -i nueva-clave-segura modiin@190.113.12.113 "cd /home/modiin/rubro && git pull && pm2 restart rubro-api"
+
+echo.
+echo ✅ Deploy completado!
+pause===========================
 echo     DEPLOY ULTRA RAPIDO - UNA CLAVE
 echo ========================================
 echo.
@@ -17,7 +26,16 @@ if defined HAS_CHANGES (
 
 REM Deploy completo en una sola conexion SSH
 echo [3/3] Deploy completo al servidor (una sola contraseña)...
-ssh modiin@190.113.12.113 "cd /opt/rubro-api && echo '📥 Actualizando codigo...' && git reset --hard origin/main && echo '🔄 Reiniciando aplicacion...' && pm2 restart rubro-api && echo '✅ Verificando estado:' && pm2 status rubro-api && echo '🎉 Deploy completado exitosamente'"
+@echo off
+echo � Iniciando deploy ultra rapido...
+echo.
+
+REM Usando la nueva clave SSH segura
+ssh -i nueva-clave-segura modii@190.113.12.113 "cd /home/modii/rubro && git pull && pm2 restart rubro-app"
+
+echo.
+echo ✅ Deploy completado!
+pause
 
 echo.
 echo 🎉 DEPLOY ULTRA RAPIDO COMPLETADO!
