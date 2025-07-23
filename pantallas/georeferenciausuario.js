@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, TouchableOpacity, FlatList, Modal, Linking, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CONFIG from '../config/api';
 
 const GeoreferenciaUsuarioScreen = ({ navigation }) => {
   const [rubros, setRubros] = useState([]);
@@ -17,7 +18,7 @@ const GeoreferenciaUsuarioScreen = ({ navigation }) => {
 
   const cargarRubros = async () => {
     try {
-      const response = await fetch('http://192.168.1.31:3000/rubros');
+      const response = await fetch(`${CONFIG.getApiUrl()}/rubros`);
       const data = await response.json();
       setRubros(data);
     } catch (error) {
@@ -33,7 +34,7 @@ const GeoreferenciaUsuarioScreen = ({ navigation }) => {
     try {
       const usuarioActual = await AsyncStorage.getItem('usuarioActual');
       if (usuarioActual) {
-        await fetch('http://192.168.1.31:3000/actualizar-actividad', {
+        await fetch(`${CONFIG.getApiUrl()}/actualizar-actividad`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ const GeoreferenciaUsuarioScreen = ({ navigation }) => {
         });
       }
       
-      const response = await fetch(`http://192.168.1.31:3000/usuarios-en-linea/${rubro}`);
+      const response = await fetch(`${CONFIG.getApiUrl()}/usuarios-en-linea/${rubro}`);
       const data = await response.json();
       setUsuariosEnLinea(data);
     } catch (error) {
@@ -88,7 +89,7 @@ const GeoreferenciaUsuarioScreen = ({ navigation }) => {
     setModalVisible(false);
     try {
       const usuarioActual = await AsyncStorage.getItem('usuarioActual');
-      const response = await fetch('http://192.168.1.31:3000/solicitar-chat', {
+      const response = await fetch(`${CONFIG.getApiUrl()}/solicitar-chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

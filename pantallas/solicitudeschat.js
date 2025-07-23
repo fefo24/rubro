@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, TouchableOpacity, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNotifications } from '../context/NotificationsContext';
+import CONFIG from '../config/api';
 
 const SolicitudesChatScreen = ({ navigation }) => {
   const [solicitudes, setSolicitudes] = useState([]);
@@ -22,7 +23,7 @@ const SolicitudesChatScreen = ({ navigation }) => {
       const usuarioActual = await AsyncStorage.getItem('usuarioActual');
       if (!usuarioActual) return;
 
-      const response = await fetch(`http://192.168.1.31:3000/solicitudes-pendientes/${usuarioActual}`);
+      const response = await fetch(`${CONFIG.getApiUrl()}/solicitudes-pendientes/${usuarioActual}`);
       const data = await response.json();
       setSolicitudes(data);
     } catch (error) {
@@ -32,7 +33,7 @@ const SolicitudesChatScreen = ({ navigation }) => {
 
   const responderSolicitud = async (solicitudId, respuesta) => {
     try {
-      const response = await fetch('http://192.168.1.31:3000/responder-solicitud', {
+      const response = await fetch(`${CONFIG.getApiUrl()}/responder-solicitud`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ const SolicitudesChatScreen = ({ navigation }) => {
 
       if (response.ok) {
         const data = await response.json();
-        Alert.alert('Éxito', `Solicitud ${respuesta}`);
+        Alert.alert('Exito', 'Solicitud ' + respuesta);
         
         // Si fue aceptada, abrir el chat
         if (respuesta === 'aceptada') {

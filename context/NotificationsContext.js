@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Alert, Vibration } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CONFIG from '../config/api';
 
 const NotificationsContext = createContext();
 
@@ -44,7 +45,7 @@ export const NotificationsProvider = ({ children }) => {
       }
 
       console.log('Verificando solicitudes para:', usuarioActual);
-      const response = await fetch(`http://192.168.1.31:3000/solicitudes-pendientes/${usuarioActual}`);
+      const response = await fetch(`${CONFIG.getApiUrl()}/solicitudes-pendientes/${usuarioActual}`);
       
       if (!response.ok) {
         console.log('Error en response:', response.status);

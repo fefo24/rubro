@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, Alert, FlatList, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import CONFIG from '../config/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ConsultarRubrosScreen = ({ navigation }) => {
   const [rubros, setRubros] = useState([]);
@@ -12,9 +14,18 @@ const ConsultarRubrosScreen = ({ navigation }) => {
     cargarRubros();
   }, []);
 
+  // Nuevo useEffect para cargar publicaciones cuando se establece el primer rubro
+  useEffect(() => {
+    if (rubros.length > 0 && !rubroSeleccionado) {
+      const primerRubro = rubros[0].rubro;
+      setRubroSeleccionado(primerRubro);
+      cargarPublicaciones(primerRubro);
+    }
+  }, [rubros]);
+
   const cargarRubros = async () => {
     try {
-      const response = await fetch('http://192.168.1.31:3000/rubros');
+      const response = await fetch(`${CONFIG.getApiUrl()}/rubros`);
       const data = await response.json();
       setRubros(data);
     } catch (error) {
@@ -28,7 +39,7 @@ const ConsultarRubrosScreen = ({ navigation }) => {
     
     setLoading(true);
     try {
-      const response = await fetch(`http://192.168.1.31:3000/publicaciones/rubro/${rubro}`);
+      const response = await fetch(`${CONFIG.getApiUrl()}/publicaciones/rubro/${rubro}`);
       const data = await response.json();
       setPublicaciones(data);
     } catch (error) {
@@ -39,12 +50,86 @@ const ConsultarRubrosScreen = ({ navigation }) => {
     }
   };
 
+  const handlePublicacionClick = async (publicacion) => {
+    try {
+      // Obtener el usuario actual desde AsyncStorage
+      const usuarioActual = await AsyncStorage.getItem('usuarioActual');
+      
+      if (!usuarioActual) {
+        Alert.alert('Error', 'No se pudo identificar el usuario actual');
+        return;
+      }
+
+      // Verificar que no sea su propia publicación
+      if (publicacion.usuario === usuarioActual) {
+        Alert.alert('Información', 'No puedes chatear contigo mismo');
+        return;
+      }
+
+      // Mostrar confirmación antes de enviar solicitud de chat
+      Alert.alert(
+        'Iniciar Chat',
+        `¿Deseas enviar una solicitud de chat a ${publicacion.usuario}?`,
+        [
+          {
+            text: 'Cancelar',
+            style: 'cancel'
+          },
+          {
+            text: 'Enviar Solicitud',
+            onPress: () => enviarSolicitudChat(usuarioActual, publicacion.usuario, rubroSeleccionado)
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error al manejar click de publicación:', error);
+      Alert.alert('Error', 'Ocurrió un error al procesar la solicitud');
+    }
+  };
+
+  const enviarSolicitudChat = async (solicitante, destinatario, rubro) => {
+    try {
+      const response = await fetch(`${CONFIG.getApiUrl()}/solicitar-chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          solicitante,
+          destinatario,
+          rubro
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert(
+          'Solicitud Enviada', 
+          `Se ha enviado una solicitud de chat a ${destinatario}. Espera su respuesta.`,
+          [{ text: 'OK' }]
+        );
+      } else {
+        Alert.alert('Error', data.error || 'No se pudo enviar la solicitud');
+      }
+    } catch (error) {
+      console.error('Error al enviar solicitud de chat:', error);
+      Alert.alert('Error', 'No se pudo enviar la solicitud de chat');
+    }
+  };
+
   const renderPublicacion = ({ item }) => (
-    <View style={styles.publicacionCard}>
+    <TouchableOpacity 
+      style={styles.publicacionCard}
+      onPress={() => handlePublicacionClick(item)}
+    >
       <Text style={styles.usuario}>👤 {item.usuario}</Text>
       <Text style={styles.publicacionTexto}>{item.publicacion}</Text>
       <Text style={styles.fecha}>📅 {new Date(item.fecha).toLocaleDateString()}</Text>
-    </View>
+      <View style={styles.clickHint}>
+        <Text style={styles.clickHintText}>💬 Toca para chatear</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -206,6 +291,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 2,
+  },
+  clickHint: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#e2e8f0',
+    alignItems: 'center',
+  },
+  clickHintText: {
+    fontSize: 12,
+    color: '#667eea',
+    fontWeight: '600',
+    fontStyle: 'italic',
   },
   usuario: {
     fontSize: 14,

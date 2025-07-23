@@ -2,10 +2,37 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Location from 'expo-location';
+import CONFIG from '../config/api';
 
 const IngresarUsuarioClave = ({ navigation }) => {
   const [usuario, setUsuario] = useState('');
   const [clave, setClave] = useState('');
+
+  // Función para probar la conectividad
+  const probarConexion = async () => {
+    try {
+      console.log('Probando conectividad a:', CONFIG.getApiUrl());
+      const response = await fetch(`${CONFIG.getApiUrl()}/`, {
+        method: 'GET',
+        timeout: 10000, // 10 segundos de timeout
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const statusText = await response.text();
+      console.log('Test de conectividad - Status:', response.status, 'Response:', statusText);
+      
+      return response.ok;
+    } catch (error) {
+      console.error('Test de conectividad - Error detallado:', 
+        error.name, error.message, 
+        error.stack ? error.stack : 'No stack trace'
+      );
+      return false;
+    }
+  };
 
   const handleSubmit = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,10 +41,24 @@ const IngresarUsuarioClave = ({ navigation }) => {
       return;
     }
     
+    // Probar conectividad primero
+    console.log('Verificando conectividad...');
+    const conectividad = await probarConexion();
+    
+    if (!conectividad) {
+      Alert.alert(
+        'Error de conectividad', 
+        'No se puede conectar al servidor. Verifica tu conexión a internet e intenta de nuevo.',
+        [{ text: 'OK' }]
+      );
+      return;
+    }
+    
     try {
+      console.log('Intentando conectar a:', CONFIG.getApiUrl());
       console.log('Enviando datos:', { usuario, clave });
       
-      const response = await fetch('http://192.168.1.31:3000/ingresar', {
+      const response = await fetch(`${CONFIG.getApiUrl()}/ingresar`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,9 +69,16 @@ const IngresarUsuarioClave = ({ navigation }) => {
         }),
       });
 
+      console.log('Status de respuesta:', response.status);
+      
+      if (!response.ok) {
+        console.error('Error HTTP:', response.status, response.statusText);
+        Alert.alert('Error de conexión', `Servidor respondió con estado: ${response.status}`);
+        return;
+      }
+
       const data = await response.json();
       console.log('Respuesta del servidor:', data);
-      
       if (response.ok) {
         // Obtener ubicación del usuario
         try {
@@ -39,7 +87,7 @@ const IngresarUsuarioClave = ({ navigation }) => {
             let location = await Location.getCurrentPositionAsync({});
             
             // Guardar ubicación en el backend
-            await fetch('http://192.168.1.31:3000/actualizar-ubicacion', {
+            await fetch(`${CONFIG.getApiUrl()}/actualizar-ubicacion`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -63,8 +111,17 @@ const IngresarUsuarioClave = ({ navigation }) => {
         alert(data.error || 'Error en el login');
       }
     } catch (error) {
-      console.error('Error al enviar datos:', error);
-      Alert.alert('Error de conexión');
+      console.error('Error completo:', error);
+      console.error('Tipo de error:', error.name);
+      console.error('Mensaje de error:', error.message);
+      
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        Alert.alert('Error de conexión', 'No se puede conectar al servidor. Verifica tu conexión a internet.');
+      } else if (error.name === 'SyntaxError') {
+        Alert.alert('Error', 'Respuesta inválida del servidor');
+      } else {
+        Alert.alert('Error', `Error de conexión: ${error.message}`);
+      }
     }
   };
 

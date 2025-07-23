@@ -15,11 +15,6 @@ const Menu = ({ navigation }) => {
     navigation.navigate('Publicaciones');
   };
 
-  const handleEnLinea = () => {
-    // Navegar a la pantalla de georeferencia de usuarios
-    navigation.navigate('GeoreferenciaUsuarios');
-  };
-
   const handleCerrarSesion = () => {
     // Cerrar sesión y volver al login
     navigation.navigate('Login');
@@ -59,17 +54,7 @@ const Menu = ({ navigation }) => {
             </View>
           </TouchableOpacity>
           
-          <TouchableOpacity style={[styles.option, styles.optionTertiary]} onPress={handleEnLinea}>
-            <View style={styles.iconContainer}>
-              <Text style={styles.icon}>🌐</Text>
-            </View>
-            <View style={styles.textContainer}>
-              <Text style={styles.optionTitle}>En Línea</Text>
-              <Text style={styles.optionSubtitle}>Conecta con otros usuarios</Text>
-            </View>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={[styles.option, styles.optionQuaternary]} onPress={handleSolicitudesChat}>
+          <TouchableOpacity style={[styles.option, styles.optionTertiary]} onPress={handleSolicitudesChat}>
             <View style={styles.iconContainer}>
               <Text style={styles.icon}>💬</Text>
               {solicitudesPendientes > 0 && (

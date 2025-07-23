@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import CONFIG from '../config/api';
 
 const IngresarUsuarioClave = ({ navigation }) => {
   const [usuario, setUsuario] = useState('');
@@ -15,7 +16,7 @@ const IngresarUsuarioClave = ({ navigation }) => {
     try {
       console.log('Registrando usuario:', { usuario, clave });
       
-      const response = await fetch('http://192.168.1.31:3000/crear', {
+      const response = await fetch(`${CONFIG.getApiUrl()}/crear`, {
         // Mantener como '/usuario' ya que funciona
         method: 'POST',
         headers: {

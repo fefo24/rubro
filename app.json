@@ -5,29 +5,48 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
     "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fefo1456.appmovil",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "com.fefo1456.appmovil",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
+    "owner": "fefo1456",
     "extra": {
       "eas": {
-        "projectId": "086c36c6-8dff-4c72-b2a5-45c707dc3b6a"
+        "projectId": "722b6fef-ade4-4537-9917-c4c296a33e85"
       }
     },
-    "owner": "fefo1456"
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "privacy": "public",
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/722b6fef-ade4-4537-9917-c4c296a33e85"
+    }
   }
 }

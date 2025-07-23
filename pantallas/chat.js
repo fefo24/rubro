@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CONFIG from '../config/api';
 
 const ChatScreen = ({ navigation, route }) => {
   const { destinatario, rubro } = route.params;
@@ -54,7 +55,7 @@ const ChatScreen = ({ navigation, route }) => {
     if (!nuevoMensaje.trim()) return;
 
     try {
-      const response = await fetch('http://192.168.1.31:3000/enviar-mensaje', {
+      const response = await fetch(`${CONFIG.getApiUrl()}/enviar-mensaje`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

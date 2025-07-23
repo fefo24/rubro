@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, Alert, ScrollView, Keyboard } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CONFIG from '../config/api';
 
 const PublicacionesScreen = ({ navigation }) => {
   const [rubros, setRubros] = useState([]);
@@ -29,7 +30,7 @@ const PublicacionesScreen = ({ navigation }) => {
 
   const cargarRubros = async () => {
     try {
-      const response = await fetch('http://192.168.1.31:3000/rubros');
+      const response = await fetch(`${CONFIG.getApiUrl()}/rubros`);
       const data = await response.json();
       setRubros(data);
     } catch (error) {
@@ -46,7 +47,7 @@ const PublicacionesScreen = ({ navigation }) => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://192.168.1.31:3000/publicaciones', {
+      const response = await fetch(`${CONFIG.getApiUrl()}/publicaciones`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,8 +90,16 @@ const PublicacionesScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.keyboardView}>
-        <View style={styles.contentContainer}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
+      >
+        <ScrollView 
+          style={styles.contentContainer}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.headerContainer}>
             <Text style={styles.title}>Nueva Publicación</Text>
             <Text style={styles.subtitle}>Comparte algo increíble</Text>
@@ -157,8 +166,8 @@ const PublicacionesScreen = ({ navigation }) => {
               <Text style={styles.backButtonText}>← Volver al Menú</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -173,6 +182,10 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 20,
   },
   headerContainer: {
     alignItems: 'center',
