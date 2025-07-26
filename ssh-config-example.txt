@@ -1,0 +1,13 @@
+# Configuración SSH para acceso rápido
+# Archivo: C:\Users\[TuUsuario]\.ssh\config
+
+Host mi-servidor
+    HostName 190.113.12.113
+    User modiin
+    Port 22
+    
+# Con esta configuración, puedes conectarte simplemente con:
+# ssh mi-servidor
+
+# Y ejecutar comandos remotos con:
+# ssh mi-servidor "cd /opt/rubro-api && git pull && pm2 restart rubro-api"

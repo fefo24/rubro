@@ -7,6 +7,7 @@ const db = require('./db');
 const loginController = require('./controllers/loginController');
 const publicacionesController = require('./controllers/publicacionesController');
 const chatController = require('./controllers/chatController');
+const secureLogger = require('./utils/secureLogger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -119,11 +120,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware simple para verificar requests
+// Middleware seguro para verificar requests (sin exponer contraseñas)
 app.use((req, res, next) => {
-  console.log('*** REQUEST DETECTADA ***');
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  console.log('Body:', req.body);
+  secureLogger.logRequest(req.method, req.url, req.body);
   next();
 });
 

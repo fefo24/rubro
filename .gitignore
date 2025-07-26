@@ -6,3 +6,10 @@ yarn-error.log*
 .DS_Store
 .vscode/
 app-movil/
+
+# SSH Keys - NUNCA subir claves privadas
+*.pem
+*.key
+id_rsa*
+*_rsa*
+*.ppk
