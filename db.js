@@ -1,19 +1,26 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-// Crear un pool de conexiones con reconexión automática
+// Crear un pool de conexiones optimizado para miles de usuarios
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT || 3306,
-  connectionLimit: 10,
-  acquireTimeout: 60000,
-  timeout: 60000,
+  // Pool optimizado para alta carga
+  connectionLimit: 50, // Aumentado de 10 a 50 para manejar más usuarios simultáneos
+  idleTimeout: 180000, // 3 minutos - reducido para liberar conexiones más rápido
+  queueLimit: 100, // Límite de cola aumentado para evitar rechazos
+  charset: 'utf8mb4',
+  collation: 'utf8mb4_unicode_ci',
+  acquireTimeout: 30000, // Reducido a 30s para fallar más rápido si hay problemas
+  timeout: 30000, // Reducido a 30s
   reconnect: true,
-  idleTimeout: 300000,
-  queueLimit: 0,
+  // Configuraciones adicionales para estabilidad
+  removeNodeErrorCount: 5,
+  restoreNodeTimeout: 0,
+  multipleStatements: false, // Seguridad
   ssl: {
     rejectUnauthorized: false
   }

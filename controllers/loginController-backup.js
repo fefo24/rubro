@@ -138,27 +138,6 @@ const loginController = {
       }
     }
   ],
-        return res.status(500).json({ error: 'Error interno del servidor', details: err.message });
-      }
-      
-      console.log('📊 Resultados encontrados:', result.length);
-      
-      if (result.length > 0) {
-        console.log('✅ Usuario autenticado exitosamente');
-        // Registrar la sesión activa cuando el usuario hace login
-        const insertSessionQuery = 'INSERT INTO sesiones_activas (usuario, ultima_actividad) VALUES (?, NOW()) ON DUPLICATE KEY UPDATE ultima_actividad = NOW()';
-        db.query(insertSessionQuery, [usuario], (sessionErr) => {
-          if (sessionErr) {
-            console.error('⚠️ Error al registrar sesión:', sessionErr);
-          }
-        });
-        
-        return res.status(200).json({ message: 'Login exitoso', usuario: usuario });
-      } else {
-        return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
-      }
-    });
-  },
 
   // Actualizar actividad del usuario en un rubro
   actualizarActividad: (req, res) => {

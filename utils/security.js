@@ -21,13 +21,13 @@ const securityUtils = {
       .withMessage('El email debe tener entre 5 y 100 caracteres');
   },
 
-  // Validaciones para contraseña
+  // Validaciones para contraseña (muy flexibles para facilitar registro)
   validatePassword: () => {
     return body('clave')
-      .isLength({ min: 6, max: 50 })
-      .withMessage('La contraseña debe tener entre 6 y 50 caracteres')
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-      .withMessage('La contraseña debe contener al menos: 1 minúscula, 1 mayúscula y 1 número');
+      .isLength({ min: 3, max: 50 })
+      .withMessage('La contraseña debe tener al menos 3 caracteres')
+      .matches(/^.+$/)
+      .withMessage('La contraseña es requerida');
   },
 
   // Verificar errores de validación
